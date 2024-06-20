@@ -1,5 +1,0 @@
-collections:
-  - name: community.crypto
-  - name: community.general
-  - name: amazon.aws
-  - name: ansible.posix
