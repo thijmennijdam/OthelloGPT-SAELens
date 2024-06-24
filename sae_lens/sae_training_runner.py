@@ -74,7 +74,7 @@ class SAETrainingRunner:
                 name=self.cfg.run_name,
                 id=self.cfg.wandb_id,
             )
-
+        
         trainer = SAETrainer(
             model=self.model,
             sae=self.sae,

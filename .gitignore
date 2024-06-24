@@ -190,3 +190,5 @@ scripts/ansible/ansible.log
 .vscode/
 .github/
 .history/
+
+othello_world/
