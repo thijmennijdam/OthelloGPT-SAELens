@@ -14,4 +14,4 @@ pytest
 pytest-cov
 pre-commit
 git+https://github.com/neelnanda-io/neel-plotly
-# plotly-utils
+kaleido

@@ -192,3 +192,6 @@ scripts/ansible/ansible.log
 .history/
 
 othello_world/
+models/
+data/
+saved_feat_acts/
