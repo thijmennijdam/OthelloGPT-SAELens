@@ -3,8 +3,6 @@ from sae_lens import LanguageModelSAERunnerConfig, SAETrainingRunner
 import torch as t
 
 def main(args):
-    device = t.device("cuda" if t.cuda.is_available() else "cpu")
-
     total_training_steps = args.total_training_steps
     batch_size = args.batch_size
     total_training_tokens = total_training_steps * batch_size
@@ -71,7 +69,7 @@ def main(args):
     # look at the next cell to see some instruction for what to do while this is running.
     sparse_autoencoder = SAETrainingRunner(cfg).run()
 
-    path = f"trained_sae_{cfg.model_name}_{cfg.hook_name}_{cfg.hook_layer}_{cfg.expansion_factor}_{cfg.l1_coefficient}_{cfg.train_batch_size_tokens}_{cfg.training_tokens}_{cfg.lr}_{cfg.l1_coefficient}"
+    path = f"new/new_trained_sae_{cfg.model_name}_{cfg.hook_name}_{cfg.hook_layer}_{cfg.expansion_factor}_{cfg.l1_coefficient}_{cfg.train_batch_size_tokens}_{cfg.training_tokens}_{cfg.lr}_{cfg.l1_coefficient}"
 
     sparse_autoencoder.save_model(path)
 

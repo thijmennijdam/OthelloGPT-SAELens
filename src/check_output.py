@@ -18,10 +18,26 @@ from othello_world.mechanistic_interpretability.mech_interp_othello_utils import
     OthelloBoardState
 )
 
+
+
+# model_name = "othello_gpt_6_128_lr0.005_bs512_epochs4_LNPre"
+# model = t.load(f"./{model_name}.pt")
+# t.save(model, f"./models/othello/{model_name}.pth")
+
+
+
+
+# model_name = "othello_gpt_6_128_lr0.005_bs512_epochs4_LNPre"
+# model = t.load(f"./{model_name}.pt")
+# t.save(model, f"./models/othello/{model_name}.pth")
+
+
 n_layers = 6
 d_model = 128
 
 device = t.device("cuda" if t.cuda.is_available() else "cpu")
+
+
 
 model_cfg = HookedTransformerConfig(
     n_layers=n_layers,
@@ -37,13 +53,14 @@ model_cfg = HookedTransformerConfig(
 )
 
 model = HookedTransformer(model_cfg).to(device)
-print("state_dict keys")
-print(t.load(f"./models/othello_gpt_6_128_lr0.0005_bs512_epochs2.pth").keys())
 
+# save model
+t.save(model, "randomly_initialized_othello_gpt_6_128.pth")
+# save model
+t.save(model, "randomly_initialized_othello_gpt_6_128.pth")
 
-
-# model.load_and_process_state_dict(t.load(f"./models/othello_gpt_6_128_lr0.0005_bs512_epochs2.pth"), fold_ln=True)
-model.load_and_process_state_dict(t.load(f"./models/othello_gpt.pth"), fold_ln=True)
+model.load_and_process_state_dict(t.load(f"./models/othello/{model_name}.pth"), fold_ln=False)
+model.load_and_process_state_dict(t.load(f"./models/othello/{model_name}.pth"), fold_ln=False)
 
 # # DIFFERENT MODEL
 # cfg = HookedTransformerConfig(
@@ -74,8 +91,10 @@ model.load_and_process_state_dict(t.load(f"./models/othello_gpt.pth"), fold_ln=T
 # t.save(model, f"./models/othello_gpt_6_128_lr0.0005_bs512_epochs2.pth")
 
 
-cfg_dict = model_cfg.to_dict()
-print(cfg_dict)
+# cfg_dict = model_cfg.to_dict()
+# print(cfg_dict)
+# cfg_dict = model_cfg.to_dict()
+# print(cfg_dict)
 # save cfg_dict as json
 # import json
 # with open("models/othello_gpt_6_128_lr0.0005_bs512_epochs2.json", "w") as f:
@@ -182,6 +201,12 @@ print("focus_valid_moves", tuple(focus_valid_moves.shape))
 focus_logits, focus_cache = model.run_with_cache(focus_games_int[:, :-1].to(device))
 focus_preds = focus_logits.argmax(-1) # shape: (num_games, 59)
 
+# convert preds to label
+focus_preds = t.tensor(to_string(focus_preds))
+print(focus_preds.shape)
+# convert preds to label
+focus_preds = t.tensor(to_string(focus_preds))
+print(focus_preds.shape)
 # for i in range(10):
 #     print("valid moves for game 1, move", i)
 #     print(t.where(focus_valid_moves[0, i, :] == 1))
@@ -193,7 +218,8 @@ total_predictions = 0
 
 for game in range(100):  # Iterate over the first 100 games
     for move in range(focus_valid_moves.shape[1] - 1):  # Iterate over all moves
-        if focus_valid_moves[game, move, focus_preds[game, move] - 1] == 1:
+        if focus_valid_moves[game, move, focus_preds[game, move]] == 1:
+        if focus_valid_moves[game, move, focus_preds[game, move]] == 1:
             correct_predictions += 1
         total_predictions += 1
 

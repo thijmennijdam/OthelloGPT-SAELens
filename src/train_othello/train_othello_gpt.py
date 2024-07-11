@@ -40,36 +40,38 @@ def train_othello_gpt(d_model, n_layers, lr, batch_size, num_epochs, wandb):
     # data_dict = {"tokens": tokenized_data.tolist()}
     # dataset = Dataset.from_dict(data_dict)
     # dataset.set_format(type="torch", columns=["tokens"])
+    
+    # streamed_dataset = load_dataset("taufeeque/othellogpt", split="train", streaming=True)
 
 
     # Load the dataset in streaming mode
-    streamed_dataset = load_dataset("taufeeque/othellogpt", split="validation", streaming=True)
-    # dataset = load_from_disk("processed_othellogpt_dataset")
+    # streamed_dataset = load_dataset("taufeeque/othellogpt", split="validation", streaming=True)
+    dataset = load_from_disk("data/processed_othellogpt_dataset")
     # Function to process each example
-    def truncate_tokens(example):
-        example['tokens'] = example['tokens'][:-1]
-        return example
+    # def truncate_tokens(example):
+    #     example['tokens'] = example['tokens'][:-1]
+    #     return example
 
-    # Collect the first 100,000 samples and apply the truncation
-    processed_tokens = []
-    max_samples = 200_000
+    # # Collect the first 100,000 samples and apply the truncation
+    # processed_tokens = []
+    # max_samples = 400_000
 
-    for i, example in enumerate(tqdm(streamed_dataset, total=max_samples, desc="Processing dataset")):
-        if i >= max_samples:
-            break
-        processed_example = truncate_tokens(example)
-        processed_tokens.append(processed_example['tokens'])
+    # for i, example in enumerate(tqdm(streamed_dataset, total=max_samples, desc="Processing dataset")):
+    #     if i >= max_samples:
+    #         break
+    #     processed_example = truncate_tokens(example)
+    #     processed_tokens.append(processed_example['tokens'])
 
-    # Convert the list of processed tokens into a Dataset
-    data_dict = {"tokens": processed_tokens}
-    processed_dataset = Dataset.from_dict(data_dict)
+    # # Convert the list of processed tokens into a Dataset
+    # data_dict = {"tokens": processed_tokens}
+    # processed_dataset = Dataset.from_dict(data_dict)
 
-    # Set format to PyTorch
-    processed_dataset.set_format(type="torch", columns=["tokens"])
+    # # Set format to PyTorch
+    # processed_dataset.set_format(type="torch", columns=["tokens"])
 
-    # Save the processed dataset locally
-    processed_dataset.save_to_disk("validation_processed_othellogpt_dataset")
+    # # Save the processed dataset locally
+    # processed_dataset.save_to_disk(f"{max_samples}_training_processed_othellogpt_dataset")
     
-    # train(model, train_cfg, dataset)
-    # t.save(model.state_dict(), f"othello_gpt_{n_layers}_{d_model}_lr{lr}_bs{batch_size}_epochs{num_epochs}.pt")
+    train(model, train_cfg, dataset)
+    t.save(model.state_dict(), f"othello_gpt_{n_layers}_{d_model}_lr{lr}_bs{batch_size}_epochs{num_epochs}_LNPre.pt")
 
